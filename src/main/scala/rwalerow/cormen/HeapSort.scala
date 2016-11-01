@@ -2,7 +2,18 @@ package rwalerow.cormen
 
 object Heap {
 
-  case class Heap(heap: Array[Int], var size: Int)
+  case class Heap(heap: Array[Int], var size: Int) {
+    def heapExractMax: Int = {
+      if(heap.size < 1)
+        throw new Error("Kopiec pusty")
+
+      val max = heap(0)
+      heap(0) = heap(size - 1)
+      size -= 1
+      heapify(this, 0)
+      max
+    }
+  }
 
   private def parent(i: Int): Int = (i - 1) >> 1  // i/2
   private def left(i: Int): Int = ((i + 1) << 1) - 1    // i*2
@@ -30,11 +41,12 @@ object Heap {
     }
   }
 
-  private def buildHeap(heap: Array[Int]): Unit = {
+  def buildHeap(heap: Array[Int]): Heap = {
     val heapSize = heap.length
     (heapSize/2 to 0 by -1).foreach{ i =>
       heapify(Heap(heap, heap.length - 1), i)
     }
+    Heap(heap, heap.length)
   }
 
   def sort(heap: Array[Int]): Unit = {
@@ -46,8 +58,4 @@ object Heap {
       heapify(Heap(heap, i - 1), 0)
     }
   }
-
-//  def heapExractMax(heap: Array[Int]): Int = {
-//
-//  }
 }
