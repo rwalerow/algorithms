@@ -3,6 +3,7 @@ package rwalerow.cormen
 object Heap {
 
   case class Heap(heap: Array[Int], var size: Int) {
+
     def heapExractMax: Int = {
       if(heap.size < 1)
         throw new Error("Kopiec pusty")
@@ -12,6 +13,15 @@ object Heap {
       size -= 1
       heapify(this, 0)
       max
+    }
+
+    def heapInsert(key: Int) = {
+      var i = size - 1
+      while(i > 1 && parent(i) < key) {
+        heap(i) = heap(parent(i))
+        i = parent(i)
+      }
+      heap(i) = key
     }
   }
 
