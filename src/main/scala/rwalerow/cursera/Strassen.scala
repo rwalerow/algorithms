@@ -11,9 +11,9 @@ object Strassen {
 
   }
 
-  implicit def matrixExtension(m: MatrixDim) = new MatrixExtensions() {
-    def +(m2: MatrixDim) =
-  }
+//  implicit def matrixExtension(m: MatrixDim) = new MatrixExtensions() {
+//    def +(m2: MatrixDim) =
+//  }
 
   case class Matrix(matrix: MatrixDim, width: Int, heigh: Int) {
     def +(other: Matrix): Matrix = {

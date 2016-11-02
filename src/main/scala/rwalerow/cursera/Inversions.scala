@@ -23,7 +23,7 @@ object Inversions {
             j += 1
           } else if(j == second.length) {
             result(k) = first(i)
-            i += 1rr.indices.foreach(k =>
+            i += 1
           if(i == first.length) {
             result(k) = second(j)
             j += 1
