@@ -15,12 +15,14 @@ object BST {
     def isEmpty: Boolean
     def setLeft(bSTNode: BSTNode): Unit = ()
     def setRight(bSTNode: BSTNode): Unit = ()
+    def setKey(k: Int): Unit
   }
 
   case class Node(var left: BSTNode, var right: BSTNode, var key: Int) extends BSTNode {
     override def isEmpty: Boolean = false
     override def setLeft(bSTNode: BSTNode): Unit = left = bSTNode
     override def setRight(bSTNode: BSTNode): Unit = right = bSTNode
+    override def setKey(k: Int): Unit = key = k
   }
 
   case class Empty() extends BSTNode {
@@ -29,6 +31,7 @@ object BST {
     override def right: BSTNode = this
     override def key: Int = Int.MaxValue
     override def isEmpty: Boolean = true
+    override def setKey(k: Int): Unit = ()
   }
 
   def newTree(): BSTNode = Empty()
@@ -90,7 +93,34 @@ object BST {
     returnValue
   }
 
-  def findNextLarger(root: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.right, min) (root, key)
+  def delete(node: BSTNode): Unit = {
+    if(node.left.isEmpty && node.right.isEmpty){
+      node.parent.foreach(p => {
+        val newEmpty = Empty()
+        newEmpty.parent = Some(p)
+
+        if(p.left eq node) p.setLeft(newEmpty)
+        else p.setRight(newEmpty)
+      })
+    } else if(node.left.isEmpty) {
+      node.parent.foreach { p =>
+        if (p.left eq node) p.setLeft(node.right)
+        else p.setRight(node.right)
+      }
+      node.right.parent = node.parent
+    } else if(node.right.isEmpty) {
+      node.parent.foreach(p =>
+        if (p.left eq node) p.setLeft(node.left)
+        else p.setRight(node.left)
+      )
+    } else {
+      val successor = findNextLarger(node, node.key)
+      node.setKey(successor.getOrElse(Empty()).key)
+      delete(successor.get)
+    }
+  }
+
+  def findNextLarger(root: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.right, min)(root, key)
   def findNextSmaller(root: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.left, max)(root, key)
 
   def findNextGeneral(moveUp: BSTNode => BSTNode, moveDown: BSTNode => BSTNode)(root: BSTNode, key: Int): Option[BSTNode] = {
