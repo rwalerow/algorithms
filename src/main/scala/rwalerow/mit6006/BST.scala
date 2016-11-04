@@ -90,43 +90,8 @@ object BST {
     returnValue
   }
 
-  def findNextLarger(root: BSTNode, key: Int): Option[BSTNode] = {
-    val startO = find(root, key)
-
-    if(startO.isEmpty) return None
-
-    if(startO.exists(!_.right.isEmpty)) {
-      startO.map(node => min(node.right))
-    } else {
-      var current = startO
-
-      while(current.isDefined && current.flatMap(_.parent).isDefined && current.flatMap(_.parent).exists(_.right eq current.get)){
-        current = current.flatMap(_.parent)
-      }
-
-      if(current.isEmpty || current.flatMap(_.parent).isEmpty) None
-      else current.flatMap(_.parent)
-    }
-  }
-
-  def findNextSmaller(root: BSTNode, key: Int): Option[BSTNode] = {
-    val startO = find(root, key)
-
-    if(startO.isEmpty) return None
-
-    if(startO.exists(!_.left.isEmpty)) {
-      startO.map(node => max(node.left))
-    } else {
-      var current = startO
-
-      while(current.isDefined && current.flatMap(_.parent).isDefined && current.flatMap(_.parent).exists(_.left eq current.get)){
-        current = current.flatMap(_.parent)
-      }
-
-      if(current.isEmpty || current.flatMap(_.parent).isEmpty) None
-      else current.flatMap(_.parent)
-    }
-  }
+  def findNextLarger(root: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.right, min) (root, key)
+  def findNextSmaller(root: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.left, max)(root, key)
 
   def findNextGeneral(moveUp: BSTNode => BSTNode, moveDown: BSTNode => BSTNode)(root: BSTNode, key: Int): Option[BSTNode] = {
     val startO = find(root, key)
@@ -134,7 +99,7 @@ object BST {
     if(startO.isEmpty) return None
 
     if(startO.exists(!moveUp(_).isEmpty)) {
-      startO.map(moveUp compose moveDown)
+      startO.map(moveDown compose moveUp)
     } else {
       var current = startO
 
@@ -144,5 +109,6 @@ object BST {
 
       if(current.isEmpty || current.flatMap(_.parent).isEmpty) None
       else current.flatMap(_.parent)
+    }
   }
 }
