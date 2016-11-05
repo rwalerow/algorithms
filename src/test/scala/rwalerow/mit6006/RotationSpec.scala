@@ -60,4 +60,19 @@ class RotationSpec extends FlatSpec with Matchers {
     left.right.key shouldBe 10
     left.left.isEmpty shouldBe (true)
   }
+
+  it should "rotate canonical tree" in new Avls {
+    avl.insert(9)
+
+    avl.rotateRight(root)
+
+    root.key shouldBe 10
+    root.left.key shouldBe 9
+    root.parent.get.key shouldBe 8
+
+    left.key shouldBe 8
+    left.parent.isEmpty shouldBe (true)
+    left.right.key shouldBe 10
+    left.left.isEmpty shouldBe (true)
+  }
 }
