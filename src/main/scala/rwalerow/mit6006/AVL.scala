@@ -157,34 +157,29 @@ object AVL {
 
   object AvlTree {
     def rotateLeft(node: BSTNode): Unit = {
-      val right = node.right
-
-      right.parent = node.parent
-      node.parent = Some(right)
-
-      node.setRight(right.left)
-      node.right.parent = Some(node)
-      right.setLeft(node)
-
-      if(right.parent.isDefined){
-        if(right.parent.exists(_.left eq node)) right.parent.foreach(_.setLeft(right))
-        else right.parent.foreach(_.setRight(right))
-      }
+      genericRotation(_.right, _.left, _.setRight(_), _.setLeft(_))(node)
     }
 
     def rotateRight(node: BSTNode): Unit = {
-      val left = node.left
+      genericRotation(_.left, _.right, _.setLeft(_), _.setRight(_))(node)
+    }
 
-      left.parent = node.parent
-      node.parent = Some(left)
+    private def genericRotation(getSide: BSTNode => BSTNode,
+                        getCounterSide: BSTNode => BSTNode,
+                        alignSideSet: (BSTNode, BSTNode) => Unit,
+                        counterSideSet: (BSTNode, BSTNode) => Unit)(node: BSTNode) = {
+      val sideElement = getSide(node)
 
-      node.setLeft(left.right)
-      node.left.parent = Some(node)
-      left.setRight(node)
+      sideElement.parent = node.parent
+      node.parent = Some(sideElement)
 
-      if(left.parent.isDefined){
-        if(left.parent.exists(_.left eq node)) left.parent.foreach(_.setLeft(left))
-        else left.parent.foreach(_.setRight(left))
+      alignSideSet(node, getCounterSide(sideElement))
+      getSide(sideElement).parent = Some(sideElement)
+      counterSideSet(sideElement, node)
+
+      if(sideElement.parent.isDefined){
+        if(sideElement.parent.exists(getSide(_) eq node)) sideElement.parent.foreach(alignSideSet(_, sideElement))
+        else sideElement.parent.foreach(counterSideSet(_, sideElement))
       }
     }
   }
