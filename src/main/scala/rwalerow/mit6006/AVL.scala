@@ -1,13 +1,14 @@
 package rwalerow.mit6006
 
-import rwalerow.mit6006.BST.{Empty, Node}
-
 /**
   * Created by robert on 04.11.16.
   */
 object AVL {
 
   class AvlTree {
+
+    import AvlTree._
+
     var root: BSTNode = Empty()
 
     def min(node: BSTNode = root): BSTNode = {
@@ -53,6 +54,7 @@ object AVL {
 
           newInsert.left.parent = Some(newInsert)
           newInsert.right.parent = Some(newInsert)
+          newInsert.height = 0
           newInsert.parent = candidate.parent
 
           if (candidateParent.left eq candidate) {
@@ -62,10 +64,12 @@ object AVL {
           }
         }
       }
+
+      candidate.parent.foreach(checkAndCorrect)
     }
 
-    def delete(node: BSTNode): Unit = {
-      if(node.left.isEmpty && node.right.isEmpty){
+    def delete(n: BSTNode): Unit = n match {
+      case node if node.left.isEmpty && node.right.isEmpty => {
         node.parent.foreach(p => {
           val newEmpty = Empty()
           newEmpty.parent = Some(p)
@@ -73,22 +77,59 @@ object AVL {
           if(p.left eq node) p.setLeft(newEmpty)
           else p.setRight(newEmpty)
         })
-      } else if(node.left.isEmpty) {
+      }
+      case node if node.left.isEmpty => {
         node.parent.foreach { p =>
           if (p.left eq node) p.setLeft(node.right)
           else p.setRight(node.right)
         }
         node.right.parent = node.parent
-      } else if(node.right.isEmpty) {
+      }
+      case node if node.right.isEmpty => {
         node.parent.foreach(p =>
           if (p.left eq node) p.setLeft(node.left)
           else p.setRight(node.left)
         )
-      } else {
+      }
+      case node => {
         val succ = successor(node, node.key)
         node.setKey(succ.getOrElse(Empty()).key)
         delete(succ.get)
       }
+    }
+
+    def rightLeftBalance(node: BSTNode): Int = node.right.height - node.left.height
+    def calculateNodeHeights(node: BSTNode): Unit = if(!node.isEmpty) node.height = 1 + Math.max(node.left.height, node.right.height)
+
+    def checkAndCorrect(node: BSTNode): Unit = {
+      val balance = rightLeftBalance(node)
+      val next = node.parent
+
+      if(balance > 1){
+        val rightBalance = rightLeftBalance(node.right)
+        if(rightBalance >= 0){
+          rotateLeft(node)
+        } else {
+          rotateRight(node.right)
+          rotateLeft(node)
+          node.parent.foreach(calculateNodeHeights)
+          node.parent.map(_.right).foreach(calculateNodeHeights)
+        }
+      } else if(balance < -1){
+        val leftBalance = rightLeftBalance(node.left)
+        if(leftBalance <= 0){
+          rotateRight(node)
+        } else {
+          rotateLeft(node.left)
+          rotateRight(node)
+          node.parent.foreach(calculateNodeHeights)
+          node.parent.map(_.left).foreach(calculateNodeHeights)
+        }
+      }
+
+      if(Math.abs(balance) > 1 && (node eq root)) root = root.parent.get
+      calculateNodeHeights(node)
+      next.foreach(checkAndCorrect)
     }
 
     def successor(node: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.right, min)(node, key)
@@ -112,8 +153,10 @@ object AVL {
         else current.flatMap(_.parent)
       }
     }
+  }
 
-    def rotateLeft(node: BSTNode) = {
+  object AvlTree {
+    def rotateLeft(node: BSTNode): Unit = {
       val right = node.right
 
       right.parent = node.parent
@@ -122,9 +165,14 @@ object AVL {
       node.setRight(right.left)
       node.right.parent = Some(node)
       right.setLeft(node)
+
+      if(right.parent.isDefined){
+        if(right.parent.exists(_.left eq node)) right.parent.foreach(_.setLeft(right))
+        else right.parent.foreach(_.setRight(right))
+      }
     }
 
-    def rotateRight(node: BSTNode) = {
+    def rotateRight(node: BSTNode): Unit = {
       val left = node.left
 
       left.parent = node.parent
@@ -133,12 +181,18 @@ object AVL {
       node.setLeft(left.right)
       node.left.parent = Some(node)
       left.setRight(node)
+
+      if(left.parent.isDefined){
+        if(left.parent.exists(_.left eq node)) left.parent.foreach(_.setLeft(left))
+        else left.parent.foreach(_.setRight(left))
+      }
     }
   }
 
   sealed trait BSTNode {
 
     var parent: Option[BSTNode] = None
+    var height = -1
 
     def key: Int
     def left: BSTNode
@@ -146,10 +200,14 @@ object AVL {
     def isEmpty: Boolean
     def setLeft(bSTNode: BSTNode): Unit = ()
     def setRight(bSTNode: BSTNode): Unit = ()
-    def setKey(k: Int): Unit
+    def setKey(k: Int): Unit = ()
   }
 
-  case class Node(var left: BSTNode, var right: BSTNode, var key: Int) extends BSTNode {
+  case class Node(
+                   var left: BSTNode,
+                   var right: BSTNode,
+                   var key: Int) extends BSTNode {
+
     override def isEmpty: Boolean = false
     override def setLeft(bSTNode: BSTNode): Unit = left = bSTNode
     override def setRight(bSTNode: BSTNode): Unit = right = bSTNode
@@ -161,6 +219,5 @@ object AVL {
     override def right: BSTNode = this
     override def key: Int = Int.MaxValue
     override def isEmpty: Boolean = true
-    override def setKey(k: Int): Unit = ()
   }
 }
