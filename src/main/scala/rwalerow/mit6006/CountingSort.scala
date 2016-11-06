@@ -42,5 +42,25 @@ object CountingSort {
     result
   }
 
+  def sort2[A](arr: Array[ElementWithKey[A]], k: Int, extractKey: Int => Int = x => x): Array[ElementWithKey[A]] = {
+    val pos: Array[Int] = Array.fill(k + 1){ 0 }
+
+    var sum = arr.length
+    arr.foreach(e => pos(extractKey(e.key)) += 1)
+    (pos.length - 1 to 0 by -1).foreach(i => {
+      pos(i) = sum - pos(i)
+      sum = pos(i)
+    })
+
+    val result: Array[ElementWithKey[A]] = Array.ofDim(arr.length)
+
+    arr.zipWithIndex.foreach{ case (e, i) =>
+      result((pos compose extractKey)(e.key)) = arr(i)
+      pos(extractKey(e.key)) += 1
+    }
+
+    result
+  }
+
   case class ElementWithKey[A](key: Int, value: A)
 }

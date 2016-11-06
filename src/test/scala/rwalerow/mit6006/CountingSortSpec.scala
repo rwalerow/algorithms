@@ -33,4 +33,22 @@ class CountingSortSpec extends FlatSpec with Matchers {
 
     result should contain theSameElementsInOrderAs expected
   }
+
+  "Sort 2" should "work the same as first version" in {
+    val arr = Array(
+      ElementWithKey(5, "a"), ElementWithKey(9, "o"),
+      ElementWithKey(2, "z"), ElementWithKey(5, "w"),
+      ElementWithKey(4, "p"), ElementWithKey(2, "a")
+    )
+
+    val expected = Array(
+      ElementWithKey(2, "z"), ElementWithKey(2, "a"),
+      ElementWithKey(4, "p"), ElementWithKey(5, "a"),
+      ElementWithKey(5, "w"), ElementWithKey(9, "o")
+    )
+
+    val result = CountingSort.sort2(arr, 9)
+
+    result should contain theSameElementsInOrderAs expected
+  }
 }
