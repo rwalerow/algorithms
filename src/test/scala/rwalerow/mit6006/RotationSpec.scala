@@ -1,6 +1,6 @@
 package rwalerow.mit6006
 
-import org.scalatest.{BeforeAndAfterEach, FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers}
 import rwalerow.mit6006.AVL.{AvlTree, BSTNode, Empty, Node}
 
 /**
@@ -27,9 +27,9 @@ class RotationSpec extends FlatSpec with Matchers {
     root.parent.get.key shouldBe 15
 
     right.key shouldBe 15
-    right.parent.isEmpty shouldBe (true)
+    right.parent.isEmpty shouldBe true
     right.left.key shouldBe 10
-    right.right.isEmpty shouldBe (true)
+    right.right.isEmpty shouldBe true
   }
 
   it should "rotate more canonical example" in new Avls {
@@ -43,9 +43,9 @@ class RotationSpec extends FlatSpec with Matchers {
     root.right.key shouldBe 12
 
     right.key shouldBe 15
-    right.parent.isEmpty shouldBe (true)
+    right.parent.isEmpty shouldBe true
     right.left.key shouldBe 10
-    right.right.isEmpty shouldBe (true)
+    right.right.isEmpty shouldBe true
   }
 
   it should "rotate in the middle of tree" in {
@@ -73,13 +73,13 @@ class RotationSpec extends FlatSpec with Matchers {
     AvlTree.rotateRight(root)
 
     root.key shouldBe 10
-    root.left.isEmpty shouldBe (true)
+    root.left.isEmpty shouldBe true
     root.parent.get.key shouldBe 8
 
     left.key shouldBe 8
-    left.parent.isEmpty shouldBe (true)
+    left.parent.isEmpty shouldBe true
     left.right.key shouldBe 10
-    left.left.isEmpty shouldBe (true)
+    left.left.isEmpty shouldBe true
   }
 
   it should "rotate canonical tree" in new Avls {
@@ -92,9 +92,9 @@ class RotationSpec extends FlatSpec with Matchers {
     root.parent.get.key shouldBe 8
 
     left.key shouldBe 8
-    left.parent.isEmpty shouldBe (true)
+    left.parent.isEmpty shouldBe true
     left.right.key shouldBe 10
-    left.left.isEmpty shouldBe (true)
+    left.left.isEmpty shouldBe true
   }
 
   it should "correctly rotate 2 element tree" in {

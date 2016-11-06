@@ -12,8 +12,8 @@ class AVLSpec extends FlatSpec with Matchers {
     avl.insert(10)
 
     avl.root.key shouldBe 10
-    avl.root.left.isEmpty shouldBe (true)
-    avl.root.right.isEmpty shouldBe (true)
+    avl.root.left.isEmpty shouldBe true
+    avl.root.right.isEmpty shouldBe true
   }
 
   it should "create 3 element tree" in {
@@ -23,8 +23,8 @@ class AVLSpec extends FlatSpec with Matchers {
     avl.insert(5)
 
     avl.root.key shouldBe 10
-    avl.root.left.isEmpty shouldBe (false)
-    avl.root.right.isEmpty shouldBe (false)
+    avl.root.left.isEmpty shouldBe false
+    avl.root.right.isEmpty shouldBe false
     avl.root.left.key shouldBe 5
     avl.root.right.key shouldBe 15
   }
@@ -34,7 +34,7 @@ class AVLSpec extends FlatSpec with Matchers {
     List(10, 15, 5, 3, 7, 12, 20).foreach(avl.insert(_))
 
     avl.root.key shouldBe 10
-    avl.root.left.isEmpty shouldBe (false)
+    avl.root.left.isEmpty shouldBe false
     avl.root.left.key shouldBe 5
     avl.root.right.key shouldBe 15
     avl.root.left.left.key shouldBe 3
@@ -98,7 +98,7 @@ class AVLSpec extends FlatSpec with Matchers {
     avl.delete(2)
 
     avl.root.key shouldBe 1
-    avl.root.right.isEmpty shouldBe (true)
+    avl.root.right.isEmpty shouldBe true
   }
 
   it should "delete from middle" in {
