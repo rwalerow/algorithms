@@ -64,4 +64,50 @@ class AVLSpec extends FlatSpec with Matchers {
     avl.root.right.key shouldBe 10
     avl.root.right.right.key shouldBe 15
   }
+
+  it should "balance zig zag" in {
+    val avl = new AvlTree
+    avl.insert(5)
+    avl.insert(3)
+    avl.insert(4)
+
+    avl.root.key shouldBe 4
+    avl.root.left.key shouldBe 3
+    avl.root.right.key shouldBe 5
+  }
+
+  "Delete" should "preserve balance property" in {
+    val avl = new AvlTree
+    List(8, 10, 5, 15, 7, 3, 4).foreach(avl.insert(_))
+
+    avl.delete(7)
+
+    avl.root.key shouldBe 8
+    avl.root.right.key shouldBe 10
+    avl.root.right.right.key shouldBe 15
+    avl.root.left.key shouldBe 4
+    avl.root.left.left.key shouldBe 3
+    avl.root.left.right.key shouldBe 5
+  }
+
+  it should "delete from simple tree" in {
+    val avl = new AvlTree
+    avl.insert(1)
+    avl.insert(2)
+
+    avl.delete(2)
+
+    avl.root.key shouldBe 1
+    avl.root.right.isEmpty shouldBe (true)
+  }
+
+  it should "delete from middle" in {
+    val avl = new AvlTree
+    List(4, 5, 3, 6).foreach(avl.insert(_))
+
+    avl.delete(5)
+
+    avl.root.key shouldBe 4
+    avl.root.right.key shouldBe 6
+  }
 }

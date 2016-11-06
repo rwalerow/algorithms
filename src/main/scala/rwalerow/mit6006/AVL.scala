@@ -21,17 +21,17 @@ object AVL {
 
     def max(node: BSTNode = root): BSTNode = {
       var curr: BSTNode = node
-      while(!curr.left.isEmpty){
+      while(!curr.right.isEmpty){
         curr = curr.right
       }
       curr
     }
 
-    def find(node: BSTNode = root, key: Int): Option[BSTNode] = {
+    def find(key: Int, node: BSTNode = root): Option[BSTNode] = {
       if(node.isEmpty) None
       else if(node.key == key) Some(node)
-      else if(node.key > key) find(node.left, key)
-      else find(node.right, key)
+      else if(node.key > key) find(key, node.left)
+      else find(key, node.right)
     }
 
     def insert(key: Int, node: BSTNode = root): Unit = {
@@ -68,34 +68,36 @@ object AVL {
       candidate.parent.foreach(checkAndCorrect)
     }
 
-    def delete(n: BSTNode): Unit = n match {
-      case node if node.left.isEmpty && node.right.isEmpty => {
-        node.parent.foreach(p => {
-          val newEmpty = Empty()
-          newEmpty.parent = Some(p)
+    def delete(key: Int): Unit = find(key).foreach(delete)
 
-          if(p.left eq node) p.setLeft(newEmpty)
-          else p.setRight(newEmpty)
-        })
+    def delete(n: BSTNode): Unit = {
+      n match {
+        case node if node.left.isEmpty && node.right.isEmpty =>
+          node.parent.foreach{ p =>
+            val newEmpty = Empty()
+            newEmpty.parent = Some(p)
+
+            if (p.left eq node) p.setLeft(newEmpty)
+            else p.setRight(newEmpty)
+          }
+        case node if node.left.isEmpty =>
+          node.parent.foreach{ p =>
+            if (p.left eq node) p.setLeft(node.right)
+            else p.setRight(node.right)
+          }
+          node.right.parent = node.parent
+        case node if node.right.isEmpty =>
+          node.parent.foreach(p =>
+            if (p.left eq node) p.setLeft(node.left)
+            else p.setRight(node.left)
+          )
+        case node =>
+          val succ = successor(node, node.key)
+          node.setKey(succ.getOrElse(Empty()).key)
+          delete(succ.get)
       }
-      case node if node.left.isEmpty => {
-        node.parent.foreach { p =>
-          if (p.left eq node) p.setLeft(node.right)
-          else p.setRight(node.right)
-        }
-        node.right.parent = node.parent
-      }
-      case node if node.right.isEmpty => {
-        node.parent.foreach(p =>
-          if (p.left eq node) p.setLeft(node.left)
-          else p.setRight(node.left)
-        )
-      }
-      case node => {
-        val succ = successor(node, node.key)
-        node.setKey(succ.getOrElse(Empty()).key)
-        delete(succ.get)
-      }
+      n.parent.foreach(calculateNodeHeights)
+      n.parent.foreach(checkAndCorrect)
     }
 
     def rightLeftBalance(node: BSTNode): Int = node.right.height - node.left.height
@@ -103,7 +105,6 @@ object AVL {
 
     def checkAndCorrect(node: BSTNode): Unit = {
       val balance = rightLeftBalance(node)
-      val next = node.parent
 
       if(balance > 1){
         val rightBalance = rightLeftBalance(node.right)
@@ -129,14 +130,14 @@ object AVL {
 
       if(Math.abs(balance) > 1 && (node eq root)) root = root.parent.get
       calculateNodeHeights(node)
-      next.foreach(checkAndCorrect)
+      node.parent.foreach(checkAndCorrect)
     }
 
     def successor(node: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.right, min)(node, key)
     def predecessor(node: BSTNode, key: Int): Option[BSTNode] = findNextGeneral(_.left, max)(node, key)
 
     def findNextGeneral(moveUp: BSTNode => BSTNode, moveDown: BSTNode => BSTNode)(root: BSTNode, key: Int): Option[BSTNode] = {
-      val startO = find(root, key)
+      val startO = find(key, root)
 
       if(startO.isEmpty) return None
 
