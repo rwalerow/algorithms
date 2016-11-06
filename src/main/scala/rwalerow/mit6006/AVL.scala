@@ -11,19 +11,12 @@ object AVL {
 
     var root: BSTNode = Empty()
 
-    def min(node: BSTNode = root): BSTNode = {
-      var curr: BSTNode = node
-      while(!curr.left.isEmpty){
-        curr = curr.left
-      }
-      curr
-    }
+    def min(node: BSTNode = root): BSTNode = abstractMinMax(_.left)(node)
+    def max(node: BSTNode = root): BSTNode = abstractMinMax(_.right)(node)
 
-    def max(node: BSTNode = root): BSTNode = {
+    def abstractMinMax(sideF: BSTNode => BSTNode)(node: BSTNode) = {
       var curr: BSTNode = node
-      while(!curr.right.isEmpty){
-        curr = curr.right
-      }
+      while(!sideF(curr).isEmpty) curr = sideF(curr)
       curr
     }
 
