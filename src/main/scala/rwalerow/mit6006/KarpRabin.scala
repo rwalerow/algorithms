@@ -1,7 +1,8 @@
 package rwalerow.mit6006
 
 /**
-  * Created by robert on 09.11.16.
+  * Improvement proposal
+  * Implement rolling hash as separate class
   */
 object KarpRabin {
 

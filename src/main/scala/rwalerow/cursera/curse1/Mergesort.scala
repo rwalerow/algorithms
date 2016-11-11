@@ -1,4 +1,4 @@
-package rwalerow.cursera
+package rwalerow.cursera.curse1
 
 //  object CompareUtils{
 //

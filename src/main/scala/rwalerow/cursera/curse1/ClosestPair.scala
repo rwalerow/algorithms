@@ -1,5 +1,6 @@
-package rwalerow.cursera
-import Math._
+package rwalerow.cursera.curse1
+
+import java.lang.Math._
 /**
   * Created by robert on 02.11.16.
   */
