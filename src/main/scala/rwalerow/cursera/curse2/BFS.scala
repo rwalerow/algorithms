@@ -7,6 +7,7 @@ object BFS {
 
   def depth(start: Vertex[Int])(end: Vertex[Int]): Int = {
     if(start eq end) return 0
+
     val leftEdges: mutable.Queue[Edge[Int]] = mutable.Queue()
     val depths = mutable.HashMap(start -> 0)
 
