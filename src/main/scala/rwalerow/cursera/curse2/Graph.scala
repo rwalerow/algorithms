@@ -11,7 +11,7 @@ object Graph {
     Graph(inputGraph.vertices.map(extendFunction))
   }
 
-  def createSpecialGraph[K](verticesList: List[K], edges: List[(K, K)]): Graph[K] = {
+  def createSpecialGraph[K](verticesList: Iterable[K], edges: Iterable[(K, K)]): Graph[K] = {
     val allVertices = verticesList.to[ListBuffer].map(e => new Vertex(e, ListBuffer[Edge[K]]()))
     for(edge <- edges) {
       val startVertex = allVertices.find(_.key equals edge._1)
@@ -23,5 +23,12 @@ object Graph {
       } start.edges.append(Edge(start, end))
     }
     Graph(allVertices)
+  }
+
+  def createReversedGraph[K](graph: Graph[K]): Graph[K] = {
+    val reversedEdges = graph.vertices
+      .flatMap(_.edges)
+      .map(e => (e.end.key, e.start.key))
+    createSpecialGraph[K](graph.vertices.map(_.key), reversedEdges)
   }
 }
