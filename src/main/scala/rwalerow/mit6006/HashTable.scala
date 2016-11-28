@@ -10,6 +10,8 @@ object HashTable {
   object Empty extends ArrayElement
   case class Value(v: String) extends ArrayElement
 
+  type OAHashTable = OpenAddressingHashTable
+
   class OpenAddressingHashTable {
     protected var size = 10
     protected var inserted = 0

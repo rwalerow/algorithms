@@ -10,7 +10,7 @@ class HashTableSpec extends WordSpec with Matchers {
   "Open addressing" should {
 
     "work without resizing" in {
-      val table = new OpenAddressingHashTable
+      val table = new OAHashTable
       table.insert("robert")
       table.insert("aneta")
       table.insert("kot")
@@ -22,7 +22,7 @@ class HashTableSpec extends WordSpec with Matchers {
     }
 
     "grow properly" in {
-      val table = new OpenAddressingHashTable
+      val table = new OAHashTable
       val words = List("ala", "ma", "kota", "a", "ten", "zwiarz", "nie", "do", "konca", "i", "ja")
       words.foreach(table.insert)
 
@@ -32,7 +32,7 @@ class HashTableSpec extends WordSpec with Matchers {
     }
 
     "search value in table prerly" in {
-      val table = new OpenAddressingHashTable
+      val table = new OAHashTable
       table.insert("robert")
       table.insert("aneta")
 
@@ -40,7 +40,7 @@ class HashTableSpec extends WordSpec with Matchers {
     }
 
     "add and delete properly" in {
-      val table = new OpenAddressingHashTable
+      val table = new OAHashTable
       table.insert("ala")
       table.insert("ma")
 
@@ -52,7 +52,7 @@ class HashTableSpec extends WordSpec with Matchers {
     }
 
     "insert -> delete -> find one after" in {
-      val table = new OpenAddressingHashTable
+      val table = new OAHashTable
       table.insert("robert")
       table.insert("adami")
 
@@ -63,7 +63,7 @@ class HashTableSpec extends WordSpec with Matchers {
     }
 
     "insert -> delete -> insert and not contain DeleteMe" in {
-      val table = new OpenAddressingHashTable
+      val table = new OAHashTable
       table.insert("robert")
       table.insert("adami")
 
@@ -75,7 +75,7 @@ class HashTableSpec extends WordSpec with Matchers {
     }
 
     "shrink table on delete" in {
-      val table = new OpenAddressingHashTable {
+      val table = new OAHashTable {
         def innerSize() = size
       }
 
