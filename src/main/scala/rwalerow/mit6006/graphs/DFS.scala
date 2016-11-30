@@ -32,5 +32,22 @@ object DFS {
     graph.keys.exists(dfsVisit)
   }
 
-  def topologicalOrder[K](graph: Graph[K]): List[K] = ???
+  def topologicalOrder[K](graph: Graph[K]): List[K] = {
+
+    val parents = mutable.HashMap[K, Option[K]]()
+    val stack = mutable.Stack[K]()
+
+    def dfsVisit(vertex: K): Unit = {
+      if(!parents.keySet.contains(vertex)){
+        for(s <- graph(vertex)){
+          dfsVisit(s)
+          parents(s) = Some(vertex)
+        }
+        stack.push(vertex)
+        parents(vertex) = None
+      }
+    }
+    graph.keys.foreach(dfsVisit)
+    stack.toList
+  }
 }

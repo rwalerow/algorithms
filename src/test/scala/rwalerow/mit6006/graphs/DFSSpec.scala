@@ -8,7 +8,7 @@ import org.scalatest.{Matchers, WordSpec}
 class DFSSpec extends WordSpec with Matchers {
 
   trait Graphs {
-    val vertices = List(1, 2 ,3 ,4 ,5 ,6 ,7 ,8)
+    val vertices = List(1, 2, 3, 4, 5, 6, 7, 8)
 
     val edgesWithoutCycle = List(1 -> 2, 2 -> 3, 2 -> 4,
       3 -> 4, 3 -> 5, 4 -> 6, 4 -> 8, 7 -> 6, 7 -> 8, 6 -> 8
@@ -28,6 +28,17 @@ class DFSSpec extends WordSpec with Matchers {
 
     "not detect cycle" in new Graphs {
       DFS.detectCycle(graphWithoutCycle) shouldBe false
+    }
+
+    "find topological order" in new Graphs {
+      val topological = DFS.topologicalOrder(graphWithoutCycle)
+
+      topological.size shouldBe 8
+      topological.indexOf(1) should be < topological.indexOf(3)
+      topological.indexOf(2) should be < topological.indexOf(6)
+      topological.indexOf(7) should be < topological.indexOf(6)
+      topological.indexOf(4) should be < topological.indexOf(6)
+      topological.indexOf(1) should be < topological.indexOf(8)
     }
   }
 }
