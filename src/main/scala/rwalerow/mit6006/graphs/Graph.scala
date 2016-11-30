@@ -10,8 +10,9 @@ object Graph {
 
   type Graph[K] = mutable.HashMap[K, ListBuffer[K]]
 
-  def createGraph[K](edges: Iterable[(K, K)]): Graph[K] = {
+  def createGraph[K](vertices: Iterable[K], edges: Iterable[(K, K)]): Graph[K] = {
     val result = mutable.HashMap.empty[K, ListBuffer[K]]
+    vertices.foreach(result.put(_, ListBuffer()))
     for ((start, finish) <- edges){
       if(result.keySet.contains(start)) result(start).append(finish)
       else result.put(start, ListBuffer(finish))

@@ -8,11 +8,12 @@ import org.scalatest.{Matchers, WordSpec}
 class BFSSpec extends WordSpec with Matchers {
 
   trait Graph {
+    val vertices = List(1,2,3,4,5,6,7,8)
     val edges = List((1, 2), (2, 1), (1, 4), (4, 1), (2, 4), (4, 2),
       (4, 7), (7, 4), (7, 8), (8, 7), (5, 8), (8, 5), (2, 5), (5, 2),
       (2, 3), (3, 2), (3, 6), (6, 3)
     )
-    val fullGraph = Graph.createGraph(edges)
+    val fullGraph = Graph.createGraph(vertices, edges)
   }
 
   "BFS" should {
