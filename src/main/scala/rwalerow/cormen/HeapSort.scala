@@ -1,11 +1,14 @@
 package rwalerow.cormen
 
+import rwalerow.utils
+import rwalerow.utils.{Compare, Grater, Smaller}
+
 object Heap {
 
-  case class Heap(heap: Array[Int], var size: Int) {
+  case class Heap[K: Compare](heap: Array[K], var size: Int) {
 
-    def heapExractMax: Int = {
-      if(heap.size < 1)
+    def heapExtractMax: K = {
+      if(heap.length < 1)
         throw new Error("Kopiec pusty")
 
       val max = heap(0)
@@ -15,9 +18,9 @@ object Heap {
       max
     }
 
-    def heapInsert(key: Int) = {
+    def heapInsert(key: K) = {
       var i = size - 1
-      while(i > 1 && parent(i) < key) {
+      while(i > 1 && Compare[K].compare(heap(parent(i)), key) == Smaller) {
         heap(i) = heap(parent(i))
         i = parent(i)
       }
@@ -27,20 +30,20 @@ object Heap {
 
   private def parent(i: Int): Int = (i - 1) >> 1  // i/2
   private def left(i: Int): Int = ((i + 1) << 1) - 1    // i*2
-  private def right(i: Int): Int = ((i + 1) << 1)
+  private def right(i: Int): Int = (i + 1) << 1
 
-  private def heapify(heapImpl: Heap, i: Int): Unit = {
+  private def heapify[K: Compare](heapImpl: Heap[K], i: Int): Unit = {
     val l = left(i)
     val r = right(i)
     val heapSize = heapImpl.size
     val heap = heapImpl.heap
     var largest = 0
 
-    if(l <= heapSize && heap(l) > heap(i))
+    if(l <= heapSize && Compare[K].compare(heap(l), heap(i)) == Grater)//heap(l) > heap(i))
       largest = l
     else largest = i
 
-    if(r <= heapSize && heap(r) > heap(largest))
+    if(r <= heapSize && Compare[K].compare(heap(r), heap(largest)) == Grater)
       largest = r
 
     if(largest != i){
@@ -51,7 +54,7 @@ object Heap {
     }
   }
 
-  def buildHeap(heap: Array[Int]): Heap = {
+  def buildHeap[K: Compare](heap: Array[K]): Heap[K] = {
     val heapSize = heap.length
     (heapSize/2 to 0 by -1).foreach{ i =>
       heapify(Heap(heap, heap.length - 1), i)
@@ -59,7 +62,7 @@ object Heap {
     Heap(heap, heap.length)
   }
 
-  def sort(heap: Array[Int]): Unit = {
+  def sort[K: Compare](heap: Array[K]): Unit = {
     buildHeap(heap)
     ((heap.length - 1) to 1 by -1).foreach{ i =>
       val help = heap(0)
