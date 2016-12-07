@@ -11,6 +11,10 @@ object Grater extends CompareResult
 
 trait Compare[T] {
   def compare(first: T, second: T): CompareResult
+  def grater(first: T, second:T): Boolean = compare(first, second) == Grater
+  def equal(first: T, second:T): Boolean = compare(first, second) == Equal
+  def smaller(first: T, second:T): Boolean = compare(first, second) == Smaller
+
 }
 object Compare {
   def apply[A: Compare]: Compare[A] = implicitly
