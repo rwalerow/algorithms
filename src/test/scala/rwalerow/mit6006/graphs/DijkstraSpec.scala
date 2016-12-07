@@ -5,17 +5,17 @@ import org.scalatest.{Matchers, WordSpec}
 import scala.collection.mutable
 import Int.MaxValue
 
+trait DirectedGraph {
+  val vertices = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+  val weights = Map( 1 -> 3 -> 1, 2 -> 5 -> 3, 10 -> 5 -> 5, 10 -> 9 -> 1, 1 -> 4 -> 3,
+    3 -> 6 -> 3, 5 -> 8 -> 2, 5 -> 7 -> 2, 4 -> 6 -> 3, 4 -> 7 -> 6, 9 -> 6 -> 2, 8 -> 9 -> 3,
+    5 -> 9 -> 1, 2 -> 10 -> 8
+  )
+
+  val g = Graph.createGraph(vertices, weights.keySet)
+}
+
 class DijkstraSpec extends WordSpec with Matchers {
-
-  trait DirectedGraph {
-    val vertices = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-    val weights = Map( 1 -> 3 -> 1, 2 -> 5 -> 3, 10 -> 5 -> 5, 10 -> 9 -> 1, 1 -> 4 -> 3,
-      3 -> 6 -> 3, 5 -> 8 -> 2, 5 -> 7 -> 2, 4 -> 6 -> 3, 4 -> 7 -> 6, 9 -> 6 -> 2, 8 -> 9 -> 3,
-      5 -> 9 -> 1, 2 -> 10 -> 8
-    )
-
-    val g = Graph.createGraph(vertices, weights.keySet)
-  }
 
   "Dijkstra" should {
     "find length from 2" in new DirectedGraph {
