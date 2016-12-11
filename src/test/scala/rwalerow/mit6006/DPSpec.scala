@@ -20,4 +20,55 @@ class DPSpec extends WordSpec with Matchers {
       result shouldBe List(3, 4, 5, 9)
     }
   }
+
+  "Longest common subsequence" should {
+
+    "find int the same words" in {
+      val word = "mama"
+
+      DP.longestCommonSubsequence(word, word) shouldBe "mama"
+    }
+
+    "find for different length" in {
+      val first = "ala"
+      val second = "al"
+
+      DP.longestCommonSubsequence(first, second) shouldBe "al"
+    }
+
+    "find split subsequence" in {
+      val first = "alo"
+      val second = "awl"
+
+      DP.longestCommonSubsequence(first, second) shouldBe "al"
+    }
+
+    "find split subsequence 2" in {
+      val first = "alo"
+      val second = "awl"
+
+      DP.longestCommonSubsequence(second, first) shouldBe "al"
+    }
+
+    "find split subsequence 3" in {
+      val first = "arorl"
+      val second = "wlal"
+
+      DP.longestCommonSubsequence(first, second) shouldBe "al"
+    }
+
+    "find same letters" in {
+      val first = "alwla"
+      val second = "ltsl"
+
+      DP.longestCommonSubsequence(first, second) shouldBe "ll"
+    }
+
+    "find hello" in {
+      val first = "hieroglyphology"
+      val second = "michaelangelo"
+
+      List(DP.longestCommonSubsequence(first, second)) should contain oneOf ("hello", "heglo")
+    }
+  }
 }
